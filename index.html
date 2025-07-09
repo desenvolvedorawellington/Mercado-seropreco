@@ -1,0 +1,259 @@
+<!DOCTYPE html><html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mercado Seropreços</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #001f3f;
+      color: white;
+    }
+    header {
+      background: #001f3f;
+      padding: 0;
+      text-align: center;
+    }
+    header img {
+      width: 100%;
+      max-width: 100%;
+      display: block;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: #002f5f;
+      padding: 10px;
+      gap: 10px;
+    }
+    nav a {
+      display: block;
+      padding: 12px 18px;
+      background: #003366;
+      color: yellow;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 10px;
+      transition: 0.3s;
+      text-align: center;
+      min-width: 120px;
+    }
+    nav a:hover {
+      background: #004080;
+      color: white;
+      transform: scale(1.05);
+    }
+    #searchBar {
+      width: 90%;
+      max-width: 600px;
+      margin: 15px auto;
+      display: flex;
+      justify-content: center;
+    }
+    #searchInput {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+    }
+    .categoria {
+      background: #002b5c;
+      margin: 20px;
+      padding: 15px;
+      border-radius: 15px;
+    }
+    .categoria h2 {
+      border-left: 5px solid yellow;
+      padding-left: 10px;
+      margin-bottom: 15px;
+    }
+    .produto {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #444;
+    }
+    .produto span {
+      font-size: 0.95em;
+    }
+    button {
+      background-color: yellow;
+      color: black;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      transform: scale(1.05);
+      background-color: #ffeb3b;
+    }
+    #carrinho {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #001f3f;
+      padding: 10px;
+      border-top: 2px solid yellow;
+    }
+    #carrinho p {
+      margin: 5px 0;
+    }
+    #finalizar {
+      display: block;
+      background-color: #25D366;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      margin-top: 10px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    footer {
+      background: #000;
+      padding: 20px;
+      font-size: 0.8em;
+      text-align: center;
+      margin-top: 100px;
+    }
+    a.categoria-ancora {
+      display: block;
+      position: relative;
+      top: -80px;
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body><header>
+  <img src="https://i.imgur.com/qCvFWCH.png" alt="Logo Mercado Seropreços">
+</header><div id="searchBar">
+  <input type="text" id="searchInput" placeholder="🔍 Buscar produto..." oninput="filtrarProdutos()">
+</div><nav>
+  <a href="#carne">🥩 Quarta da Carne</a>
+  <a href="#arraia">🌽 Arraiá de Ofertas</a>
+  <a href="#ofertas">🎉 Melhores Ofertas</a>
+  <a href="#bebidas">🍹 Bebidas</a>
+  <a href="#limpeza">🫧 Limpeza</a>
+</nav><div id="produtos"></div><div id="carrinho">
+  <p><strong>Carrinho:</strong> <span id="itens"></span></p>
+  <p><strong>Total:</strong> R$ <span id="total">0.00</span></p>
+  <p id="aviso" style="color: red"></p>
+  <a id="finalizar" href="#" target="_blank">Finalizar Pedido via WhatsApp</a>
+</div><footer>
+  <p><strong>Endereço:</strong> Av. Sebastião Ferreira da Silva, nº 16, Boa Esperança, Seropédica - RJ</p>
+  <p><strong>Funcionamento:</strong> Seg. a Sáb. 08h–20h | Dom. 08h–15h</p>
+  <p><strong>Delivery:</strong> Seg. a Sáb. 09h–16h (sem domingos e feriados)</p>
+  <p>Pedido mínimo: R$ 50,00. Taxa de entrega conforme a localidade. Não vendemos por atacado. Alguns itens têm limite de quantidade.</p>
+</footer><script>
+  const produtos = {
+    "🥩 Quarta da Carne": ["carne", [
+      ["Contra Filé Bovino Peça kg", 38.99], ["Alcatra Bovina Peça kg", 34.99],
+      ["Costela Bovina kg", 23.99], ["Bola da Pá Bovina kg", 35.99],
+      ["Acém Bovino Pedaço kg", 28.99], ["Músculo Bovino Pedaço kg", 31.99],
+      ["Peito Bovino Peça kg", 31.99], ["Lombinho Bovino kg", 32.99],
+      ["Chuleta de Costela kg", 24.99], ["Linguiça Toscana Rivelli kg", 16.99],
+      ["Fígado Bovino kg", 15.99], ["Bucho Bovino kg", 17.99],
+      ["Mocotó Bovino kg", 10.99], ["Rabada Bovino kg", 27.99],
+      ["Filé de Frango Rivelli Bdj 1kg", 17.99], ["Filé de Frango Sadia Bdj 1kg", 18.99],
+      ["Coxa Sobrecoxa Dorsal kg", 7.49], ["Asa de Frango kg", 11.99],
+      ["Linguiça Calabresa Perdigão kg", 19.99], ["Salsicha Sadia kg", 9.99],
+      ["Frango à Passarinho kg", 8.99], ["Mini Chicken Perdigão Trad. 275g", 6.99],
+      ["Sanduíche Hot Pocket Sadia 145g", 6.99], ["Pizza Calabresa Perdigão 460g", 15.99]
+    ]],
+    "🌽 Arraiá de Ofertas": ["arraia", [
+      ["Ervilha seca Campista 500g", 5.99], ["Canjica Branca Granfino 500g", 3.99],
+      ["Farinha de Trigo Granfino 1kg", 4.99], ["Milho verde Predilecta 170g", 3.49],
+      ["Milho de Pipoca Granfino 500g", 3.99], ["Flocão Dona Clara 500g", 3.99],
+      ["Feijão Branco Granfino 500g", 9.99], ["Feijão Vermelho Big Bóia 500g", 8.99],
+      ["Leite condensado Elegê 395g", 4.99], ["Creme Leite Italac 200g", 2.99],
+      ["Fubá Granfino 1kg", 3.99], ["Mist. Bolo Renata 400g", 4.99],
+      ["Tapioca Granulada Granfino 500g", 5.99], ["Massa para Pastel Vanoly 400g", 5.99]
+    ]],
+    "🎉 Melhores Ofertas": ["ofertas", [
+      ["Arroz Rei da Panela 5kg", 18.99], ["Arroz Barriga Cheia 5kg", 19.99],
+      ["Feijão Preto Big Boia 1kg", 4.99], ["Óleo de Soja Liza 900ml", 6.99],
+      ["Macarrão Espaguete Cadore 750g", 4.99], ["Massa para Lasanha Cadore 500g", 6.99],
+      ["Azeite Gallo Puro 250ml", 18.99], ["Maionese Hellmann’s sache 1kg", 18.99],
+      ["Farofa Bom Gosto 300g", 8.99], ["Farinha de Mandioca Crua 1kg", 4.99],
+      ["Molho de Tomate Predilecta 300g", 1.49], ["Café Bom Dia 500g", 29.99],
+      ["Leite em Pó Glória 360g", 13.99], ["Pão de Forma Plus Vita 480g", 7.99],
+      ["Manteiga Kreminas 200g", 9.99], ["Cream Cheese President 150g", 9.99],
+      ["Margarina Qualy c/ sal 500g", 7.99], ["Biscoito Recheado Piraquê 160g – Leve 5 unid.", 9.99],
+      ["Rosquinha Cadore 300g", 3.99], ["Biscoito Maizena Cadore 360g", 3.99],
+      ["Biscoito Club Social 144g", 4.99]
+    ]],
+    "🍹 Bebidas": ["bebidas", [
+      ["Refrigerante Coca-Cola 2L", 8.99], ["Refrigerante Kuat 2L", 4.99],
+      ["Suco Néctar DaFruta 1L", 4.99], ["Suco em Pó Frisco 18g", 0.99],
+      ["Suco de Uva Integral Panizzon 1,4L", 14.99], ["Vinho Tinto Reservado 750ml", 24.99],
+      ["Cerveja Império Latão 473ml", 3.79], ["Cerveja Brahma Latão 473ml", 3.99]
+    ]],
+    "🫧 Limpeza": ["limpeza", [
+      ["Sabão em Pó Invicto 1,6kg", 9.99], ["Detergente Spa 500ml", 1.99],
+      ["Veja Multiuso 500ml", 3.99], ["Sabão Pastoso Corcovado 500g", 5.99],
+      ["Papel Higiênico Noble FD 12 un.", 9.99], ["Sabonete Siene 85g", 1.29],
+      ["Creme Dental Even 70g", 1.89], ["Fralda Descartável Babysec", 17.99]
+    ]]
+  };
+
+  const lista = document.getElementById('produtos');
+  const itens = {};
+
+  for (let cat in produtos) {
+    const [id, array] = produtos[cat];
+    const div = document.createElement('div');
+    div.className = 'categoria';
+    div.innerHTML = `<a class='categoria-ancora' id='${id}'></a><h2>${cat}</h2>`;
+
+    array.forEach(([nome, preco]) => {
+      const p = document.createElement('div');
+      p.className = 'produto';
+      p.innerHTML = `<span>${nome} – R$ ${preco.toFixed(2)}</span><button onclick="addItem('${nome}', ${preco})">+ Adicionar</button>`;
+      div.appendChild(p);
+    });
+
+    lista.appendChild(div);
+  }
+
+  function addItem(nome, preco) {
+    if (!itens[nome]) itens[nome] = { qtd: 0, preco };
+    itens[nome].qtd++;
+    atualizarCarrinho();
+  }
+
+  function atualizarCarrinho() {
+    const itensEl = document.getElementById('itens');
+    const totalEl = document.getElementById('total');
+    const avisoEl = document.getElementById('aviso');
+    const finalizar = document.getElementById('finalizar');
+
+    let txt = '', total = 0, msg = 'Olá, gostaria de fazer o seguinte pedido:%0A';
+    for (let nome in itens) {
+      const item = itens[nome];
+      txt += `${item.qtd}x ${nome}, `;
+      total += item.qtd * item.preco;
+      msg += `- ${item.qtd}x ${nome} – R$ ${(item.qtd * item.preco).toFixed(2)}%0A`;
+    }
+
+    itensEl.textContent = txt;
+    totalEl.textContent = total.toFixed(2);
+    avisoEl.textContent = total < 50 ? 'Pedido mínimo: R$ 50,00' : '';
+    finalizar.href = `https://wa.me/5521965666380?text=${msg}Total: R$ ${total.toFixed(2)}`;
+  }
+
+  function filtrarProdutos() {
+    const termo = document.getElementById("searchInput").value.toLowerCase();
+    document.querySelectorAll(".produto").forEach(p => {
+      const nome = p.querySelector("span").textContent.toLowerCase();
+      p.style.display = nome.includes(termo) ? "flex" : "none";
+    });
+  }
+</script></body>
+</html>
