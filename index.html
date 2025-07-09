@@ -1,7 +1,8 @@
-<!DOCTYPE html><html lang="pt-br">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mercado Seropreços</title>
   <style>
     body {
@@ -21,24 +22,23 @@
       display: block;
     }
     nav {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
       background: #002f5f;
       padding: 10px;
-      gap: 10px;
     }
     nav a {
       display: block;
-      padding: 12px 18px;
+      padding: 18px;
       background: #003366;
       color: yellow;
       text-decoration: none;
       font-weight: bold;
-      border-radius: 10px;
+      border-radius: 12px;
       transition: 0.3s;
       text-align: center;
-      min-width: 120px;
+      font-size: 1em;
     }
     nav a:hover {
       background: #004080;
@@ -129,29 +129,114 @@
       top: -80px;
       visibility: hidden;
     }
+
+    /* Modal do endereço */
+    #enderecoModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #enderecoModal div {
+      background: #002f5f;
+      padding: 30px 20px;
+      border-radius: 15px;
+      text-align: center;
+      max-width: 90%;
+      box-shadow: 0 0 15px #000;
+    }
+    #enderecoModal h2 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+    #enderecoModal p {
+      font-size: 1em;
+      margin-bottom: 20px;
+      color: #ccc;
+    }
+    #enderecoModal input {
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      border: none;
+      font-size: 1em;
+      margin-bottom: 15px;
+    }
+    #enderecoModal button {
+      background: yellow;
+      color: black;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #enderecoModal button:hover {
+      background: #ffe600;
+    }
   </style>
 </head>
-<body><header>
+<body>
+
+<!-- Modal do endereço -->
+<div id="enderecoModal">
+  <div>
+    <h2>👋 Seja bem-vindo ao <span style="color: yellow;">Mercado Seropreços</span></h2>
+    <p>Antes de começar, informe seu endereço de entrega:</p>
+    <input id="inputEndereco" type="text" placeholder="Ex: Rua A, nº 123, Bairro" />
+    <button onclick="fecharModal()">Entrar</button>
+  </div>
+</div>
+
+<header>
   <img src="https://imgur.com/a/44Dz8Ei" alt="Logo Mercado Seropreços">
-</header><div id="searchBar">
+</header>
+
+<div id="searchBar">
   <input type="text" id="searchInput" placeholder="🔍 Buscar produto..." oninput="filtrarProdutos()">
-</div><nav>
+</div>
+
+<nav>
   <a href="#carne">🥩 Quarta da Carne</a>
   <a href="#arraia">🌽 Arraiá de Ofertas</a>
   <a href="#ofertas">🎉 Melhores Ofertas</a>
   <a href="#bebidas">🍹 Bebidas</a>
   <a href="#limpeza">🫧 Limpeza</a>
-</nav><div id="produtos"></div><div id="carrinho">
+</nav>
+
+<div id="produtos"></div>
+
+<div id="carrinho">
   <p><strong>Carrinho:</strong> <span id="itens"></span></p>
   <p><strong>Total:</strong> R$ <span id="total">0.00</span></p>
   <p id="aviso" style="color: red"></p>
   <a id="finalizar" href="#" target="_blank">Finalizar Pedido via WhatsApp</a>
-</div><footer>
+</div>
+
+<footer>
   <p><strong>Endereço:</strong> Av. Sebastião Ferreira da Silva, nº 16, Boa Esperança, Seropédica - RJ</p>
   <p><strong>Funcionamento:</strong> Seg. a Sáb. 08h–20h | Dom. 08h–15h</p>
   <p><strong>Delivery:</strong> Seg. a Sáb. 09h–16h (sem domingos e feriados)</p>
   <p>Pedido mínimo: R$ 50,00. Taxa de entrega conforme a localidade. Não vendemos por atacado. Alguns itens têm limite de quantidade.</p>
-</footer><script>
+</footer>
+
+<script>
+  function fecharModal() {
+    const endereco = document.getElementById("inputEndereco").value.trim();
+    if (!endereco) {
+      alert("Por favor, insira o endereço para continuar.");
+      return;
+    }
+    document.getElementById("enderecoModal").style.display = "none";
+  }
+
   const produtos = {
     "🥩 Quarta da Carne": ["carne", [
       ["Contra Filé Bovino Peça kg", 38.99], ["Alcatra Bovina Peça kg", 34.99],
@@ -211,14 +296,12 @@
     const div = document.createElement('div');
     div.className = 'categoria';
     div.innerHTML = `<a class='categoria-ancora' id='${id}'></a><h2>${cat}</h2>`;
-
     array.forEach(([nome, preco]) => {
       const p = document.createElement('div');
       p.className = 'produto';
       p.innerHTML = `<span>${nome} – R$ ${preco.toFixed(2)}</span><button onclick="addItem('${nome}', ${preco})">+ Adicionar</button>`;
       div.appendChild(p);
     });
-
     lista.appendChild(div);
   }
 
@@ -255,5 +338,7 @@
       p.style.display = nome.includes(termo) ? "flex" : "none";
     });
   }
-</script></body>
+</script>
+
+</body>
 </html>
